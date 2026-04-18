@@ -1,0 +1,50 @@
+{
+  "Pos AWLR JIAT Curug Agung": {
+    "id_logger": "10360",
+    "id_parameter": "16",
+    "Data Air Tanah": 90.360,
+    "Muka Air Tanah": 9.640,
+    "Kedalaman Sumur": 100.0,
+    "Kedalaman Sensor": 55
+  },
+  "Pos AWLR JIAT Sanding": {
+    "id_logger": "10361",
+    "id_parameter": "20",
+    "Data Air Tanah": 74.440,
+    "Muka Air Tanah": 5.560,
+    "Kedalaman Sumur": 80.0,
+    "Kedalaman Sensor": 55
+  },
+  "Pos AWLR JIAT Sindang Karya": {
+    "id_logger": "10362",
+    "id_parameter": "24",
+    "Data Air Tanah": 98.480,
+    "Muka Air Tanah": 1.520,
+    "Kedalaman Sumur": 100.0,
+    "Kedalaman Sensor": 55
+  },
+  "Pos AWLR JIAT Pondok Kahuru": {
+    "id_logger": "10363",
+    "id_parameter": "28",
+    "Data Air Tanah": 51.930,
+    "Muka Air Tanah": 18.070,
+    "Kedalaman Sumur": 70.0,
+    "Kedalaman Sensor": 60
+  },
+  "Pos AWLR JIAT Kamasan": {
+    "id_logger": "10364",
+    "id_parameter": "32",
+    "Data Air Tanah": 99.770,
+    "Muka Air Tanah": 0.230,
+    "Kedalaman Sumur": 100.0,
+    "Kedalaman Sensor": 60
+  },
+  "Pos AWLR JIAT Sindang Mandi": {
+    "id_logger": "10365",
+    "id_parameter": "36",
+    "Data Air Tanah": 53.010,
+    "Muka Air Tanah": 16.990,
+    "Kedalaman Sumur": 70.0,
+    "Kedalaman Sensor": 35
+  }
+}

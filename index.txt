@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard JIAT - Simulasi TMA</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-body: #f4f7fb;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-label: #64748b;
+            --border: #e2e8f0;
+            --primary: #3b82f6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-float: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+
+        .dashboard {
+            max-width: 1300px; /* Melebarkan dashboard agar muat konten bersandingan */
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* SISTEM LAYOUT COMPACT (SIDE-BY-SIDE) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr; /* 360px untuk grafis tabung, sisanya panel data */
+            gap: 2rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+
+        @media(max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* Jadi bertumpuk vertikal jika diliat dari HP/Tablet */
+            }
+        }
+
+        /* HEADER */
+        .header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            color: var(--text-label);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* SECTION LAYOUT */
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .section:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-label);
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--border);
+            margin-left: 1rem;
+        }
+
+        /* GRID CARDS */
+        .grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-float);
+            border-color: #cbd5e1;
+        }
+
+        .card:hover::before {
+            background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+        }
+
+        .card-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-label);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .card-unit {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-label);
+        }
+
+        /* CHART CONTAINER */
+        .chart-container {
+            background-color: var(--bg-card);
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            height: 450px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Fixes */
+        @media(max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .card-value {
+                font-size: 1.5rem;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* WELL SCHEMA STYLES */
+        .well-schema-container {
+            background-color: var(--bg-card);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 0; /* Menghilangkan margin bawah berlebih */
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        .well-visualization {
+            position: relative;
+            width: 140px; 
+            height: 400px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* The horizontal ground line */
+        .well-ground {
+            position: absolute;
+            top: 20px;
+            left: -150px;
+            right: -150px;
+            height: 3px;
+            background-color: #334155;
+            z-index: 10;
+        }
+
+        /* Top block at the surface */
+        .well-surface-stand {
+            position: absolute;
+            top: 10px;
+            width: 70px;
+            height: 10px;
+            background: repeating-linear-gradient(45deg, #1e293b, #1e293b 5px, #475569 5px, #475569 10px);
+            z-index: 11;
+            border-radius: 2px;
+            border: 1px solid #0f172a;
+        }
+
+        /* Outer Casing / Gravel pack (The grey speckled sides) */
+        .well-casing-outer {
+            position: absolute;
+            top: 23px; /* Just below ground */
+            width: 100%;
+            height: calc(100% - 23px);
+            background-color: #64748b;
+            /* Soil pattern mimicking the OCR picture */
+            background-image: radial-gradient(#334155 1px, transparent 1px), radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+            border-left: 2px solid #334155;
+            border-right: 2px solid #334155;
+            border-bottom: 5px solid #1e293b;
+            z-index: 1;
+        }
+        
+        .well-casing-outer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40%; 
+            background-color: #475569; /* Solid dark grey for impermeable layer */
+        }
+
+        /* The Central Pipe */
+        .well-pipe {
+            position: absolute;
+            top: 5px;
+            width: 40px;
+            height: 100%; 
+            background-color: #f1f5f9;
+            border-left: 3px solid #1e293b;
+            border-right: 3px solid #1e293b;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Inside the pipe: Water */
+        .well-water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%; /* Default 0, JS will set this */
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.4);
+        }
+        
+        .well-water::before {
+             content: '';
+             position: absolute;
+             top: 0; left: 0; right: 0; height: 3px;
+             background: rgba(255,255,255,0.7);
+        }
+
+        /* Sensor Cable */
+        .well-sensor-cable {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 50%; /* 35m / 70m = 50% */
+            background-color: #94a3b8;
+            z-index: 6;
+        }
+
+        /* Sensor Probe */
+        .well-sensor-probe {
+            position: absolute;
+            top: 50%; /* At the end of the cable */
+            width: 10px;
+            height: 25px;
+            background: linear-gradient(90deg, #cbd5e1, #94a3b8);
+            border-radius: 2px;
+            border: 1px solid #475569;
+            z-index: 7;
+            transform: translateY(-100%);
+        }
+        
+        /* Top cap / bolt */
+        .well-pipe::before {
+             content: '';
+             position: absolute;
+             top: -5px;
+             width: 18px;
+             height: 5px;
+             background: #64748b;
+             border: 1px solid #1e293b;
+        }
+
+        /* LABELS AND DEPTH MARKERS */
+        .well-labels {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%; 
+            width: 100%;
+            pointer-events: none;
+        }
+        
+        .well-label {
+            position: absolute;
+            left: 120px; 
+            display: flex;
+            align-items: center;
+            transition: top 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .well-label::before {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background-color: var(--border);
+            margin-right: 10px;
+            border-top: 1px dashed #94a3b8;
+        }
+
+        .well-label span {
+            background-color: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-label);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .label-ground {
+            top: calc(20px + 2rem); 
+        }
+        
+        .label-tma {
+            /* Initial value, JS overrides */
+            top: calc(25% + 2rem); 
+        }
+        .label-tma span {
+            color: var(--primary);
+            border-color: #bae6fd;
+            background-color: #f0f9ff;
+        }
+        
+        .label-tma::before {
+             border-top: 1px solid var(--primary);
+        }
+
+        .label-sensor {
+            top: calc(50% + 2rem);
+        }
+
+        .label-bottom {
+            bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+        <!-- Dashboard Header -->
+        <div class="header">
+            <h1>JIAT Telemetry Dashboard</h1>
+            <p>Jaringan Irigasi Air Tanah - Sistem Pemantauan Otomatis Berbasis IoT</p>
+        </div>
+
+        <!-- MAIN LAYOUT GRID (Agar Elemen Berdampingan Kiri-Kanan) -->
+        <div class="dashboard-grid">
+            
+            <!-- KOLOM KIRI (Visualisasi Animasi) -->
+            <div class="dashboard-left">
+
+                <!-- Section: Visualisasi Fisik Sumur Interaktif -->
+        <div class="well-schema-container">
+            <!-- Label Header Kecil -->
+            <div style="position: absolute; top: 1.5rem; left: 1.5rem; font-weight: bold; color: var(--text-main); font-size: 1.2rem;">
+                Pos AWLR JIAT Curug Agung
+                <div style="font-size: 0.8rem; font-weight: normal; color: var(--text-label); margin-top: 0.2rem;">Visualisasi Animasi TMA Real-Time</div>
+            </div>
+            
+            <div class="well-visualization">
+                <!-- Ground Surface -->
+                <div class="well-ground"></div>
+                <div class="well-surface-stand"></div>
+                
+                <!-- Soil and Aquifer -->
+                <div class="well-casing-outer"></div>
+
+                <!-- Inner Pipe / Casing -->
+                <div class="well-pipe">
+                    <!-- Water Level -->
+                    <div class="well-water" id="dynamic-well-water"></div>
+                    
+                    <!-- Sensor Cable & Probe -->
+                    <div class="well-sensor-cable"></div>
+                    <div class="well-sensor-probe"></div>
+                </div>
+            </div>
+
+            <!-- Labels Container -->
+            <div class="well-labels">
+                <div class="well-label label-ground"><span>Permukaan Tanah (0m)</span></div>
+                <div class="well-label label-tma" id="label-tma-dynamic"><span>TMA: -- m</span></div>
+                <div class="well-label label-sensor"><span>Sensor (55m)</span></div>
+                <div class="well-label label-bottom"><span>Dasar (100m)</span></div>
+            </div>
+        </div>
+        </div> <!-- End Dashboard Left Col -->
+
+        <!-- KOLOM KANAN (Panel Data Card) -->
+        <div class="dashboard-right">
+
+            <!-- Section: Data Sumur (From Image OCR) -->
+        <div class="section">
+            <div class="section-title">Data Sumur</div>
+            <div class="grid grid-4">
+                <div class="card">
+                    <div class="card-label">Data Air Tanah</div>
+                    <div class="card-value-container">
+                        <div class="card-value">98.520</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Muka Air Tanah</div>
+                    <div class="card-value-container">
+                        <!-- ID tma-current akan di-update oleh Javascript secara real-time -->
+                        <div class="card-value" id="tma-current">1.480</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Kedalaman Sumur</div>
+                    <div class="card-value-container">
+                        <div class="card-value">100.000</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Kedalaman Sensor</div>
+                    <div class="card-value-container">
+                        <div class="card-value">55</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Spesifikasi Teknis & Pemanfaatan (Ref: Kruseman & De Ridder) -->
+        <div class="section">
+            <div class="section-title">Spesifikasi Operasional & Pemanfaatan</div>
+            <div class="grid grid-4">
+                <div class="card">
+                    <div class="card-label">Diameter Sumur</div>
+                    <div class="card-value-container">
+                        <div class="card-value">0.20</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Kedalaman Pompa</div>
+                    <div class="card-value-container">
+                        <div class="card-value">40.0</div>
+                        <div class="card-unit">m</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Discharge (Debit Konstan)</div>
+                    <div class="card-value-container">
+                        <div class="card-value">10</div>
+                        <div class="card-unit">L/s</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Total Pemakaian 1 Hari</div>
+                    <div class="card-value-container">
+                        <div class="card-value">288</div>
+                        <div class="card-unit">m³</div>
+                    </div>
+                </div>
+                <!-- Baris Kedua Grid Auto -->
+                <div class="card">
+                    <div class="card-label">Total Pemakaian 1 Minggu</div>
+                    <div class="card-value-container">
+                        <div class="card-value">2.016</div>
+                        <div class="card-unit">m³</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Total Pemakaian 1 Bulan</div>
+                    <div class="card-value-container">
+                        <div class="card-value">8.640</div>
+                        <div class="card-unit">m³</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Total Pemakaian 1 Tahun</div>
+                    <div class="card-value-container">
+                        <div class="card-value">105.120</div>
+                        <div class="card-unit">m³</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Logger (From Image OCR) -->
+        <div class="section">
+            <div class="section-title">Logger</div>
+            <div class="grid grid-3">
+                <div class="card">
+                    <div class="card-label">Humidity</div>
+                    <div class="card-value-container">
+                        <div class="card-value">36.56</div>
+                        <div class="card-unit">%</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Temperature</div>
+                    <div class="card-value-container">
+                        <div class="card-value">43.24</div>
+                        <div class="card-unit">°C</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Baterai</div>
+                    <div class="card-value-container">
+                        <div class="card-value">14.15</div>
+                        <div class="card-unit">Volt</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        </div> <!-- End Dashboard Right Col -->
+        </div> <!-- End Dashboard Grid Master -->
+
+        <!-- Section: AI Analytics -->
+        <div class="section">
+            <div class="section-title">Prediksi Cerdas (AI / M3)</div>
+            <div class="grid grid-3">
+                <div class="card"
+                    style="background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; box-shadow: 0 10px 15px -3px rgb(56 189 248 / 0.1);">
+                    <div class="card-label" style="color: #94a3b8;">Estimasi Waktu Pemulihan (Recovery)</div>
+                    <div class="card-value-container">
+                        <div class="card-value" id="ai-recovery-time" style="color: #38bdf8; font-size: 2.2rem;">--
+                        </div>
+                        <div class="card-unit" style="color: #94a3b8;">Menit</div>
+                    </div>
+                </div>
+                <div class="card"
+                    style="background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; box-shadow: 0 10px 15px -3px rgb(16 185 129 / 0.1);">
+                    <div class="card-label" style="color: #94a3b8;">Nilai Transmisivitas (T)</div>
+                    <div class="card-value-container">
+                        <div class="card-value" id="ai-transmissivity" style="color: #10b981; font-size: 2.2rem;">--</div>
+                        <div class="card-unit" style="color: #94a3b8;">m²/hari</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Grafik Simulasi M3 & Theis Recovery -->
+        <div class="section">
+            <div class="section-title">Pemantauan Muka Air Tanah (TMA) Per-Jam | Simulasi Eksponensial</div>
+            <div class="chart-container">
+                <!-- Tempat grafik Chart.js berada -->
+                <canvas id="tmaChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Javascript Data Logic -->
+    <script>
+        // Parameter dasar fisik visualisasi disesuaikan untuk skala Dummy API (TMA ~3.5m - 5.8m)
+        const KEDALAMAN_SUMUR = 10.0;
+
+        // Elements
+        const waterElement = document.getElementById('dynamic-well-water');
+        const tmaLabelElement = document.getElementById('label-tma-dynamic');
+        const tmaContainer = document.getElementById('tma-current');
+        
+        function updateWellGraphic(tmaValue) {
+            // Sisa Kedalaman Air Berbanding Dasar Sumur 
+            const ketinggian_air_m = KEDALAMAN_SUMUR - tmaValue;
+            
+            // Translate meter to percentage 0-100% of the pipe container
+            const heightPercentage = Math.max(0, (ketinggian_air_m / KEDALAMAN_SUMUR) * 100);
+            
+            // Translate margin top TMA
+            const topMarginPercentage = Math.min(90, (tmaValue / KEDALAMAN_SUMUR) * 100);
+
+            waterElement.style.height = `${heightPercentage}%`;
+            tmaLabelElement.style.top = `calc(${topMarginPercentage}% + 2rem)`;
+            tmaLabelElement.innerHTML = `<span>TMA Aktual (${tmaValue.toFixed(2)}m)</span>`;
+            
+            // Update UI Data Card Sumur serentak
+            tmaContainer.innerText = tmaValue.toFixed(3);
+            if (tmaValue > 4.5) { 
+                tmaContainer.style.color = '#ef4444'; 
+            } else {
+                tmaContainer.style.color = '#10b981'; 
+            }
+        }
+
+        let chartInstance = null;
+
+        async function initDashboard() {
+            try {
+                // 1. Menarik data simulasi 24 jam dari API Dummy Python (Port 8001)
+                const res = await fetch("http://localhost:8001/simulasi/siklus?resolusi_menit=60");
+                const payload = await res.json();
+                const telemetryData = payload.data;
+
+                const labels = [];
+                const dataPumping = [];
+                const dataThreshold = [];
+                const limitYield = payload.max_drawdown;
+
+                telemetryData.forEach(point => {
+                    labels.push(point.timestamp);
+                    dataPumping.push(point.tma_meter);
+                    dataThreshold.push(limitYield);
+                });
+
+                // ============================================
+                // LOOP SIMULASI ANIMASI TABUNG & PERGERAKAN AI
+                // ============================================
+                let currentIter = 0;
+                updateWellGraphic(telemetryData[0].tma_meter);
+                
+                setInterval(() => {
+                    currentIter++;
+                    if(currentIter >= telemetryData.length) {
+                        currentIter = 0; 
+                    }
+                    let cursorData = telemetryData[currentIter];
+                    updateWellGraphic(cursorData.tma_meter);
+                    
+                    // Update Panel AI berdasarkan API Dummy respon per jam itu
+                    const recTimeEl = document.getElementById('ai-recovery-time');
+                    const transEl = document.getElementById('ai-transmissivity');
+                    
+                    // Ganti Header Box kedua dari Transmisivitas jadi Persentase Pulih
+                    transEl.parentElement.previousElementSibling.innerText = "Progres Pemulihan";
+                    
+                    if (cursorData.fase === 'RECOVERY') {
+                         recTimeEl.innerText = cursorData.eta_formatted;
+                         recTimeEl.style.fontSize = "1.4rem";
+                         recTimeEl.style.color = "#facc15"; // Kuning
+                         transEl.innerText = `${cursorData.persen_recovery}%`;
+                    } else if (cursorData.fase === 'DISCHARGING') {
+                         recTimeEl.innerText = "Pompa Aktif Surut";
+                         recTimeEl.style.fontSize = "1.6rem";
+                         recTimeEl.style.color = "#ef4444"; // Merah
+                         transEl.innerText = "0%";
+                    } else {
+                         recTimeEl.innerText = "Sudah Stabil";
+                         recTimeEl.style.color = "#10b981"; // Hijau
+                         transEl.innerText = "100%";
+                    }
+                    recTimeEl.nextElementSibling.style.display = 'none';
+
+                }, 1000); // 1 detik web = 1 jam di simulasi dunia nyata
+
+                // ============================================
+                // SETUP GRAFIK MENGGUNAKAN CHART.JS
+                // ============================================
+                const ctx = document.getElementById('tmaChart').getContext('2d');
+                const gradientFill = ctx.createLinearGradient(0, 0, 0, 450);
+                gradientFill.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); 
+                gradientFill.addColorStop(1, 'rgba(59, 130, 246, 0.05)'); 
+
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Kedalaman Muka Air (TMA) Aktual',
+                                data: dataPumping,
+                                borderColor: '#2563eb',
+                                backgroundColor: gradientFill,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: '#2563eb',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 7,
+                                fill: true,
+                                tension: 0.3 
+                            },
+                            {
+                                label: 'Batas Kritis / Limit Yield Pompa',
+                                data: dataThreshold,
+                                borderColor: '#ef4444', 
+                                borderWidth: 2,
+                                borderDash: [5, 5], 
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top', labels: { font: { family: 'Inter', size: 13, weight: '500' }, usePointStyle: true, boxWidth: 8 } },
+                            tooltip: { mode: 'index', intersect: false, backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { size: 13, family: 'Inter' }, bodyFont: { size: 14, weight: 'bold', family: 'Inter' }, padding: 12, boxPadding: 6 }
+                        },
+                        scales: {
+                            y: {
+                                reverse: true, // Membalik sumbu (makin dalam = makin ke bawah)
+                                min: Math.max(0, payload.static_tma - 1), 
+                                max: Math.ceil(limitYield + 1), 
+                                grid: { color: '#e2e8f0', drawBorder: false },
+                                title: { display: true, text: 'Kedalaman Air Tanah dari Mulut Sumur (meter)', color: '#64748b', font: { family: 'Inter', size: 13, weight: '600' } }
+                            },
+                            x: { grid: { display: false, drawBorder: false }, ticks: { maxTicksLimit: 12 } }
+                        },
+                        interaction: { mode: 'index', intersect: false }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Gagal menarik data dari api_dummy.py:", error);
+                
+                document.getElementById('ai-recovery-time').innerText = "Offline";
+                document.getElementById('ai-transmissivity').innerText = "Run uvicorn api_dummy:app";
+                document.getElementById('ai-transmissivity').style.fontSize = "1rem";
+            }
+        }
+
+        // Jalankan Fetching saat halaman dimuat
+        initDashboard();
+    </script>
+</body>
+
+</html>

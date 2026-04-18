@@ -1,0 +1,63 @@
+PPO untuk discharge : rekomendasi Waktu discharge,
+korelasi ke tma
+PPO untuk charge recovery akuifer (recovery time)
+
+
+
+CONFINED AQUIFER :merupakan jenis aquifer dibawah aquiclude, jadi tertindih oleh 2 aquiclude
+UNCONFINED AQUIFER : merupakan jenis aquifer yang diatas nya langsung aquifer dan di Bawah nya ada aquifer aquiclude
+
+
+
+contoh :
+
+Note : Data Air Tanah didapat dari selisih kedalaman sumur - Muka Air Tanah
+
+Pos AWLR JIAT Pondok Kahuru
+Data Sumur
+Data Air Tanah 51.930 m didapat dari selisih kedalaman sumur - Muka Air Tanah
+Muka Air Tanah 18.070 m
+Kedalaman Sumur 70.000 m
+Kedalaman Sensor 60 m
+
+Pos AWLR JIAT Kamasan
+Data Sumur 
+Data Air Tanah 		: 99.770 m 
+Muka Air Tanah 		: 0.230 m 
+Kedalaman Sumur 	: 100.000 m 
+Kedalaman Sensor 	: 60 m  
+
+Pos AWLR JIAT Curug Agung
+Data Sumur
+Data Air Tanah 		: 90.360 m
+Muka Air Tanah 		: 9.640 m
+Kedalaman Sumur 	: 100.000 m
+Kedalaman Sensor	: 55 m
+
+Pos AWLR JIAT Sanding
+Data Sumur
+Data Air Tanah		: 74.440 m
+Muka Air Tanah		: 5.560 m
+Kedalaman Sumur		: 80.000 m
+Kedalaman Sensor 	: 55 m
+
+Pos AWLR JIAT Sindang Karya
+Data Sumur
+Data Air Tanah 		: 98.480 m
+Muka Air Tanah 		: 1.520 m
+Kedalaman Sumur 	: 100.000 m
+Kedalaman Sensor 	: 55 m
+
+Pos AWLR JIAT Sindang Mandi
+Data Sumur
+Data Air Tanah 		: 53.010 m
+Muka Air Tanah		: 16.990 m
+Kedalaman Sumur 	: 70.000 m
+Kedalaman Sensor 	: 35 m
+
+
+
+
+
+
+

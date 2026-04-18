@@ -1,0 +1,4 @@
+swagger : https://mini-stesy.beacontelemetry.com/swagger
+https://mini-stesy.beacontelemetry.com/api/v1/loggers
+https://mini-stesy.beacontelemetry.com/api/v1/loggers/id_logger/parameters
+https://mini-stesy.beacontelemetry.com/api/v1/loggers/id_logger/hourly-range?parameter_id=16&start_date=2026-01-01&end_date=2026-01-31

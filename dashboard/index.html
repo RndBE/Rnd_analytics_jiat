@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard JIAT - Analisa Muka Air Tanah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+        :root {
+            --bg-body: #f4f7fb;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-label: #64748b;
+            --border: #e2e8f0;
+            --primary: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-float: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+
+        .dashboard {
+            max-width: 1340px;
+            margin: 2rem auto 3rem;
+            padding: 0 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.03em;
+        }
+
+        .header p {
+            margin: .45rem 0 0;
+            color: var(--text-label);
+        }
+
+        .header-meta {
+            text-align: right;
+            color: var(--text-label);
+            font-size: .95rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-label);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin-left: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: .25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .card-label {
+            color: var(--text-label);
+            font-size: .9rem;
+            margin-bottom: .5rem;
+            font-weight: 500;
+        }
+
+        .card-value-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: .75rem;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .card-unit {
+            font-size: 1rem;
+            color: var(--text-label);
+            font-weight: 600;
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 15px -3px rgb(15 23 42 / .18);
+        }
+
+        .ai-card .card-label {
+            color: #94a3b8;
+        }
+
+        .ai-card .card-unit {
+            color: #94a3b8;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 500px;
+        }
+
+        .well-schema-container {
+            background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            height: 100%;
+            min-height: 520px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .well-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: .25rem;
+        }
+
+        .well-subtitle {
+            color: var(--text-label);
+            font-size: .9rem;
+            margin-bottom: 1rem;
+        }
+
+        .well-visualization {
+            position: relative;
+            width: 140px;
+            height: 390px;
+            display: flex;
+            justify-content: center;
+            margin: 1rem auto 0;
+        }
+
+        .well-ground {
+            position: absolute;
+            top: 20px;
+            left: -120px;
+            right: -120px;
+            height: 3px;
+            background: #334155;
+            z-index: 10;
+        }
+
+        .well-surface-stand {
+            position: absolute;
+            top: 10px;
+            width: 70px;
+            height: 10px;
+            background: repeating-linear-gradient(45deg, #1e293b, #1e293b 5px, #475569 5px, #475569 10px);
+            z-index: 11;
+            border-radius: 2px;
+            border: 1px solid #0f172a;
+        }
+
+        .well-casing-outer {
+            position: absolute;
+            top: 23px;
+            width: 100%;
+            height: calc(100% - 23px);
+            background: #64748b;
+            background-image: radial-gradient(#334155 1px, transparent 1px), radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+            border-left: 2px solid #334155;
+            border-right: 2px solid #334155;
+            border-bottom: 5px solid #1e293b;
+            z-index: 1;
+        }
+
+        .well-casing-outer::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 40%;
+            background: #475569;
+        }
+
+        .well-pipe {
+            position: absolute;
+            top: 5px;
+            width: 40px;
+            height: 100%;
+            background: #f1f5f9;
+            border-left: 3px solid #1e293b;
+            border-right: 3px solid #1e293b;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, .18);
+        }
+
+        .well-pipe::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            width: 18px;
+            height: 5px;
+            background: #64748b;
+            border: 1px solid #1e293b;
+        }
+
+        .well-water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            transition: height .4s ease;
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, .35);
+        }
+
+        .well-water::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, .7);
+        }
+
+        .well-sensor-cable {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 55%;
+            background: #94a3b8;
+            z-index: 6;
+        }
+
+        .well-sensor-probe {
+            position: absolute;
+            top: 55%;
+            width: 10px;
+            height: 25px;
+            background: linear-gradient(90deg, #cbd5e1, #94a3b8);
+            border-radius: 2px;
+            border: 1px solid #475569;
+            z-index: 7;
+            transform: translateY(-100%);
+        }
+
+        .well-labels {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .well-label {
+            position: absolute;
+            left: calc(50% + 74px);
+            display: flex;
+            align-items: center;
+            transition: top .4s ease;
+        }
+
+        .well-label::before {
+            content: '';
+            width: 58px;
+            height: 1px;
+            background: var(--border);
+            margin-right: 10px;
+            border-top: 1px dashed #94a3b8;
+        }
+
+        .well-label span {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .35rem .55rem;
+            box-shadow: var(--shadow-sm);
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--text-label);
+            white-space: nowrap;
+        }
+
+        .label-ground {
+            top: 70px;
+        }
+
+        .label-sensor {
+            top: 265px;
+        }
+
+        .label-bottom {
+            bottom: 40px;
+        }
+
+        .label-tma span {
+            color: var(--primary);
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            border-radius: 999px;
+            padding: .5rem .8rem;
+            font-size: .9rem;
+            font-weight: 700;
+        }
+
+        .status-normal {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status-waspada {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .status-tertekan {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .muted {
+            color: var(--text-label);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div>
+                <h1>JIAT Telemetry Dashboard</h1>
+                <p>Analisa muka air tanah, dummy event, dan recovery sumur per 1 jam</p>
+            </div>
+            <div class="header-meta">
+                <div>Auto refresh: 1 jam</div>
+                <div id="last-update">Update terakhir: -</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div>
+                <div class="well-schema-container">
+                    <div class="well-title" id="lokasi-title">Pos AWLR JIAT Curug Agung</div>
+                    <div class="well-subtitle">Visualisasi kondisi sumur berbasis data API</div>
+
+                    <div class="well-visualization">
+                        <div class="well-ground"></div>
+                        <div class="well-surface-stand"></div>
+                        <div class="well-casing-outer"></div>
+                        <div class="well-pipe">
+                            <div class="well-water" id="dynamic-well-water"></div>
+                            <div class="well-sensor-cable" id="dynamic-sensor-cable"></div>
+                            <div class="well-sensor-probe" id="dynamic-sensor-probe"></div>
+                        </div>
+                    </div>
+
+                    <div class="well-labels">
+                        <div class="well-label label-ground"><span>Permukaan Tanah (0m)</span></div>
+                        <div class="well-label label-tma" id="label-tma-dynamic"><span>TMA: -</span></div>
+                        <div class="well-label label-sensor"><span id="sensor-label">Sensor: 55m</span></div>
+                        <div class="well-label label-bottom"><span id="bottom-label">Dasar: 100m</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="section">
+                    <div class="section-title">Data Sumur</div>
+                    <div class="grid grid-4">
+                        <div class="card">
+                            <div class="card-label">Data Air Tanah</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="data-air-tanah">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Muka Air Tanah</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="muka-air-tanah">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Kedalaman Sumur</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="kedalaman-sumur">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Kedalaman Sensor</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="kedalaman-sensor">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Spesifikasi Operasional</div>
+                    <div class="grid grid-4">
+                        <div class="card">
+                            <div class="card-label">Diameter Sumur</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="diameter-sumur">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Kedalaman Pompa</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="kedalaman-pompa">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Debit Konstan</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="debit-lps">-</div>
+                                <div class="card-unit">L/s</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Kategori Data Terakhir</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="kategori-terakhir" style="font-size:1.1rem;">-</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Total Pemakaian 1 Hari</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="pemakaian-hari">-</div>
+                                <div class="card-unit">m³</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Total Pemakaian 1 Minggu</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="pemakaian-minggu">-</div>
+                                <div class="card-unit">m³</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Total Pemakaian 1 Bulan</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="pemakaian-bulan">-</div>
+                                <div class="card-unit">m³</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-label">Total Pemakaian 1 Tahun</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="pemakaian-tahun">-</div>
+                                <div class="card-unit">m³</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Analisa Recovery</div>
+                    <div class="grid grid-3">
+                        <div class="card ai-card">
+                            <div class="card-label">Drawdown Maksimum (Smax)</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="smax" style="color:#38bdf8;">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                        <div class="card ai-card">
+                            <div class="card-label">Waktu ke 90% Recovery</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="t90" style="color:#facc15;">-</div>
+                                <div class="card-unit">jam</div>
+                            </div>
+                        </div>
+                        <div class="card ai-card">
+                            <div class="card-label">Residual Drawdown</div>
+                            <div class="card-value-row">
+                                <div class="card-value" id="residual" style="color:#10b981;">-</div>
+                                <div class="card-unit">m</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:1rem;">
+                        <span id="status-chip" class="status-chip">Status belum tersedia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" style="margin-top:1.5rem;">
+            <div class="section-title">Grafik Muka Air Tanah dan Cadangan Air</div>
+            <div class="chart-container">
+                <div id="plotlyChart" class="chart-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8001";
+        const REFRESH_INTERVAL_MS = 3600000;
+
+        function formatNumber(value, digits = 3) {
+            if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
+            return Number(value).toFixed(digits);
+        }
+
+        function updateText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+
+        function updateWellGraphic(tmaValue, kedalamanSumur, kedalamanSensor) {
+            const waterElement = document.getElementById("dynamic-well-water");
+            const tmaLabelElement = document.getElementById("label-tma-dynamic");
+            const sensorCable = document.getElementById("dynamic-sensor-cable");
+            const sensorProbe = document.getElementById("dynamic-sensor-probe");
+
+            const tinggiAir = kedalamanSumur - tmaValue;
+            const heightPercentage = Math.max(0, Math.min(100, (tinggiAir / kedalamanSumur) * 100));
+            const topMarginPercentage = Math.max(0, Math.min(92, (tmaValue / kedalamanSumur) * 100));
+            const sensorTop = Math.max(2, Math.min(95, (kedalamanSensor / kedalamanSumur) * 100));
+
+            waterElement.style.height = `${heightPercentage}%`;
+            tmaLabelElement.style.top = `calc(${topMarginPercentage}% + 28px)`;
+            tmaLabelElement.innerHTML = `<span>TMA Aktual (${Number(tmaValue).toFixed(2)} m)</span>`;
+
+            sensorCable.style.height = `${sensorTop}%`;
+            sensorProbe.style.top = `${sensorTop}%`;
+        }
+
+        function updateStatusChip(statusText) {
+            const chip = document.getElementById("status-chip");
+            chip.textContent = statusText || "-";
+            chip.className = "status-chip";
+
+            const lower = (statusText || "").toLowerCase();
+            if (lower.includes("normal")) {
+                chip.classList.add("status-normal");
+            } else if (lower.includes("waspada")) {
+                chip.classList.add("status-waspada");
+            } else {
+                chip.classList.add("status-tertekan");
+            }
+        }
+
+        function renderChart(chartData) {
+            const x = chartData.map(d => d.waktu);
+            const yMat = chartData.map(d => d.Muka_Air_Tanah_mean);
+            const yAir = chartData.map(d => d.Data_Air_Tanah);
+
+            const trace1 = {
+                x: x,
+                y: yMat,
+                type: "scatter",
+                mode: "lines",
+                name: "Muka Air Tanah",
+                line: { width: 2.5, color: "#dc2626" },
+                yaxis: "y1"
+            };
+
+            const trace2 = {
+                x: x,
+                y: yAir,
+                type: "scatter",
+                mode: "lines",
+                name: "Data Air Tanah",
+                line: { width: 2.5, color: "#2563eb" },
+                yaxis: "y2"
+            };
+
+            const layout = {
+                margin: { l: 70, r: 70, t: 20, b: 50 },
+                paper_bgcolor: "#ffffff",
+                plot_bgcolor: "#ffffff",
+                hovermode: "x unified",
+                legend: {
+                    orientation: "h",
+                    y: 1.12,
+                    x: 1,
+                    xanchor: "right"
+                },
+                xaxis: {
+                    title: "Waktu"
+                },
+                yaxis: {
+                    title: "Muka Air Tanah (m)",
+                    autorange: "reversed",
+                    color: "#dc2626",
+                    gridcolor: "#e2e8f0"
+                },
+                yaxis2: {
+                    title: "Data Air Tanah (m)",
+                    overlaying: "y",
+                    side: "right",
+                    color: "#2563eb",
+                    showgrid: false
+                }
+            };
+
+            Plotly.newPlot("plotlyChart", [trace1, trace2], layout, { responsive: true, displayModeBar: true });
+        }
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ma/dashboard?last_n_hours=240`);
+                if (!res.ok) throw new Error("Gagal mengambil data API");
+
+                const payload = await res.json();
+                const summary = payload.summary;
+                const analysis = payload.analysis;
+                const meta = payload.meta;
+
+                updateText("lokasi-title", summary.lokasi);
+                updateText("last-update", `Update terakhir: ${meta.generated_at}`);
+
+                updateText("data-air-tanah", formatNumber(summary.data_air_tanah));
+                updateText("muka-air-tanah", formatNumber(summary.muka_air_tanah));
+                updateText("kedalaman-sumur", formatNumber(summary.kedalaman_sumur));
+                updateText("kedalaman-sensor", formatNumber(summary.kedalaman_sensor, 1));
+                updateText("diameter-sumur", formatNumber(summary.diameter_sumur, 2));
+                updateText("kedalaman-pompa", formatNumber(summary.kedalaman_pompa, 1));
+                updateText("debit-lps", formatNumber(summary.debit_lps, 1));
+                updateText("pemakaian-hari", formatNumber(summary.pemakaian_hari_m3, 3));
+                updateText("pemakaian-minggu", formatNumber(summary.pemakaian_minggu_m3, 3));
+                updateText("pemakaian-bulan", formatNumber(summary.pemakaian_bulan_m3, 3));
+                updateText("pemakaian-tahun", formatNumber(summary.pemakaian_tahun_m3, 3));
+                updateText("kategori-terakhir", summary.kategori_data_terakhir);
+
+                updateText("smax", formatNumber(analysis.s_max));
+                updateText("t90", analysis.t_90_jam === null ? ">24" : formatNumber(analysis.t_90_jam, 2));
+                updateText("residual", formatNumber(analysis.residual_drawdown));
+                updateStatusChip(analysis.status);
+
+                updateText("sensor-label", `Sensor: ${formatNumber(summary.kedalaman_sensor, 1)}m`);
+                updateText("bottom-label", `Dasar: ${formatNumber(summary.kedalaman_sumur, 1)}m`);
+
+                updateWellGraphic(
+                    Number(summary.muka_air_tanah),
+                    Number(summary.kedalaman_sumur),
+                    Number(summary.kedalaman_sensor)
+                );
+
+                renderChart(payload.chart_data);
+            } catch (err) {
+                console.error(err);
+                updateText("last-update", "Update terakhir: gagal mengambil data");
+                updateStatusChip("API tidak terhubung");
+            }
+        }
+
+        loadDashboard();
+        setInterval(loadDashboard, REFRESH_INTERVAL_MS);
+    </script>
+</body>
+
+</html>

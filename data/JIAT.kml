@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="1YyON9LZbNwrsn6EWcHwQo5VIQcdHttoy">
+	<name>underGround</name>
+	<gx:CascadingStyle kml:id="__managed_style_0CB3FF147A3ED3F10688">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=5f86ac&amp;id=2003&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_418F35D96E3ED3F10687">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=5f86ac&amp;id=2003&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_30B7C3B6113ED3F10687">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_418F35D96E3ED3F10687</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_0CB3FF147A3ED3F10688</styleUrl>
+		</Pair>
+	</StyleMap>
+	<gx:CascadingStyle kml:id="__managed_style_28D1D2CF2C3ED3F10684">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2345&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1560E66FAE3ED3F10684">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2345&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0B91B9A2CB3ED3F10684">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1560E66FAE3ED3F10684</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_28D1D2CF2C3ED3F10684</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0699C7D0543EBA38F64E">
+		<name>POS AWLR JIAT Kamasan</name>
+		<LookAt>
+			<longitude>105.8756772</longitude>
+			<latitude>-6.1187285</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.805911777295</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>105.8756772,-6.1187285,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="08847B3BD63EBA39FDB9">
+		<name>Pos AWLR JIAT Sindang Karya</name>
+		<LookAt>
+			<longitude>105.906536</longitude>
+			<latitude>-6.089767299999999</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.869432246413</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>105.906536,-6.0897673,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="079C60D72D3EBA3A6994">
+		<name>Pos AWLR JIAT Demo</name>
+		<LookAt>
+			<longitude>105.9250971</longitude>
+			<latitude>-6.0816603</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.887159639251</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>105.9250971,-6.081660299999999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="094C5FAAEC3EBA3AE6D6">
+		<name>Pos AWLR JIAT Pondok Kahuru</name>
+		<LookAt>
+			<longitude>106.0230112</longitude>
+			<latitude>-6.222119999999999</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.576700841593</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>106.0230112,-6.222119999999999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="027D2FF1A63EBA3B9F21">
+		<name>Pos AWLR JIAT Curug Agung</name>
+		<LookAt>
+			<longitude>106.109043</longitude>
+			<latitude>-6.2183173</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.585198728341</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>106.109043,-6.2183173,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0F3818FC953EBA3C1A30">
+		<name>Pos AWLR JIAT Sanding</name>
+		<LookAt>
+			<longitude>106.1900492</longitude>
+			<latitude>-6.240343699999999</latitude>
+			<altitude>0</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1049.535904734635</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0B91B9A2CB3ED3F10684</styleUrl>
+		<Point>
+			<extrude>1</extrude>
+			<coordinates>106.1900492,-6.240343699999999,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0D79D7DDD13EBB9D906C">
+		<name>0M</name>
+		<LookAt>
+			<longitude>105.8720302530045</longitude>
+			<latitude>-6.115608725955267</latitude>
+			<altitude>0.1013618706971697</altitude>
+			<heading>-14.92636498881926</heading>
+			<tilt>36.11438399413294</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>458.9475253065758</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_30B7C3B6113ED3F10687</styleUrl>
+		<Point>
+			<coordinates>105.8720375289113,-6.115710275568929,0.1014080221865199</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>
